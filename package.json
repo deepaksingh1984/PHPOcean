@@ -1,9 +1,9 @@
 {
-  "publisher": "065a684c-adeb-6b70-8d69-996c10e074b3",
+  "publisher": "DeepakSingh",
   "name": "phpocean",
   "displayName": "PHPOcean",
   "description": "Advanced PHP snippets and php.net code intelligence.",
-  "version": "1.0.0", 
+  "version": "1.0.1", 
   "sponsor": {
     "url": "https://buymeacoffee.com/deepakbsingh"
   },
