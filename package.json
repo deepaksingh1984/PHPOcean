@@ -3,7 +3,7 @@
   "name": "phpocean",
   "displayName": "PHPOcean",
   "description": "Advanced PHP snippets and php.net code intelligence.",
-  "version": "1.0.1", 
+  "version": "1.0.1",
   "sponsor": {
     "url": "https://buymeacoffee.com/deepakbsingh"
   },
@@ -16,7 +16,17 @@
     "vscode": "^1.109.0"
   },
   "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Linters",
     "Other"
+  ],
+  "keywords": [
+    "php",
+    "security",
+    "database",
+    "compliance",
+    "snippets"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
