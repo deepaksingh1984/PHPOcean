@@ -28,6 +28,12 @@ Type the prefix and hit `Tab` to instantly scaffold robust, production-ready cod
 * `phptransaction` - Safe Database Transaction Block (Commit/Rollback)
 * `phpsel`, `phpupdate`, `phpdelete` - Secure Prepared Statements
 
+### 🚀 Instant Intelligence
+Get the full Database Class. Just hover and code.
+![Database Calass Demo](https://res.cloudinary.com/techmeshblog/image/upload/v1772708596/database_qkrq0q.gif)
+
+
+
 #### 🔒 Security & Authentication (Zero-Trust Aligned)
 * `phpsecuresession_class` - Strict Session Class (Fingerprinting, Cloudflare proxy IP resolution, timeouts)
 * `phpsession` - Basic Secure Session Initialization (OWASP compliant)
@@ -37,6 +43,12 @@ Type the prefix and hit `Tab` to instantly scaffold robust, production-ready cod
 * `phpotp` - Cryptographically Secure OTP Generator
 * `phppassword_hash` - Bcrypt Password Hashing
 * `phpsanitize` - Strict Input Sanitization
+
+### 🛠️ Enterprise Snippets
+Session Security in a second.
+![Snippet Demo Seeeison Security](https://res.cloudinary.com/techmeshblog/image/upload/v1772708596/session_aii5t4.gif)
+
+
 
 #### 🌐 APIs, WebSockets & Compliance Reporting
 * `phpxml` - Strict DOMDocument XML Generation (Designed for global FATCA/CRS compliance reporting)
