@@ -46,7 +46,7 @@ Get the full Database Class. Just hover and code.
 
 ### 🛠️ Enterprise Snippets
 Session Security in a second.
-![Snippet Demo Seeeison Security](https://res.cloudinary.com/techmeshblog/image/upload/v1772708596/session_aii5t4.gif)
+![Snippet Demo Seeeison Security](https://res.cloudinary.com/techmeshblog/image/upload/v1772710172/session_daegmf.gif)
 
 
 
