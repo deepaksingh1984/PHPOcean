@@ -1,9 +1,17 @@
 # Change Log
 
-All notable changes to the "phpocean" extension will be documented in this file.
+All notable changes to the **PHPOcean** extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## [1.0.1] - 2026-03-05
+### Added
+- Integrated high-concurrency database snippets (Master-Slave, Batch Inserts).
+- Added global compliance XML generators.
+- Enhanced PHP core documentation scraper for offline hover support.
 
-## [Unreleased]
+### Fixed
+- Resolved build task conflicts in VS Code environments.
+- Updated marketplace metadata for improved searchability.
 
-- Initial release
+## [1.0.0] - 2026-03-04
+- Initial release of PHPOcean.
+- Core PHP snippets and hover documentation.
