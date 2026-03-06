@@ -64,6 +64,40 @@ Session Security in a second.
 * `phpencrypt_file` - OpenSSL File Encryption
 * `phpdir` - Secure Directory Creation (0755 permissions)
 
+
+### 3. PHPOcean: The PHP Intelligence Layer
+
+PHPOcean is an enterprise-grade extension designed to eliminate boilerplate, enforce secure coding architectures, and provide real-time intelligence for PHP developers. Built for speed and security, it helps you ship compliant, high-performance applications faster.
+
+## 🛡️ NEW: Real-Time OWASP Security Linter
+PHPOcean now acts as a live security auditor, scanning your code as you type to prevent critical vulnerabilities before they reach production. 
+
+**Detects & Flags:**
+* **Cryptographic Failures:** Warns against outdated algorithms like `md5()` and `sha1()`.
+* **SQL Injection (SQLi):** Flags unsafe variable interpolation inside database queries.
+* **Cross-Site Scripting (XSS):** Warns when superglobals (`$_GET`, `$_POST`) are output directly to the browser.
+* **Session Hijacking:** Detects insecure `session_start()` configurations.
+
+## 💡 Intelligent Quick Fixes
+Spot a vulnerability? Just click the VS Code Lightbulb (`Ctrl + .`) to instantly rewrite the code using secure, modern PHP standards.
+* Instantly upgrade `md5()` to `password_hash()` or `hash('sha256')`.
+* Automatically wrap vulnerable `echo` outputs in `htmlspecialchars()`.
+* Inject strict cookie parameters (`httponly`, `samesite=Strict`) into bare sessions.
+
+## 🚀 Enterprise Snippet Architecture
+Stop rewriting the same configurations. Type a trigger keyword and hit `Tab` to drop production-ready architecture directly into your workspace.
+
+**Popular Commands:**
+* `phpdatabase` - Drops a strict, high-performance PDO Singleton wrapper.
+* `phpdb_crud` - Generates a comprehensive Database class with dynamic, secure bindings.
+* `phpmaster_slave` - Instantly scaffolds a Read/Write database connection pool.
+* `phpsecuresession_class` - Implements a highly secure, fingerprint-verified session manager.
+* `phpsanitize` - Drops in a standardized input sanitization method.
+
+## 🧠 Hover Intelligence & Autocomplete
+Get instant documentation, parameter signatures, and direct links to the official PHP manual simply by hovering over native PHP functions.
+
+
 ## 🛠️ Installation
 Install the `.vsix` package directly from the VS Code Extensions menu. 
 

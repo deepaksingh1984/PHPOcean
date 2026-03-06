@@ -1,5 +1,24 @@
 # Change Log
 
+# Change Log
+
+## [1.0.3] - 2026-03-06
+### Added
+- **Real-Time OWASP Security Linter:** PHPOcean now actively scans your code for critical security vulnerabilities as you type.
+- **Intelligent Quick Fixes (Lightbulb):** Added context-aware Code Actions to instantly patch vulnerabilities with enterprise-grade secure code.
+  - *Fix Cryptographic Failures:* Instantly upgrade `md5()` and `sha1()` to secure `hash('sha256')` or `password_hash()`.
+  - *Fix Session Hijacking:* Automatically inject strict cookie parameters (`httponly`, `secure`, `samesite`) for bare `session_start()` calls.
+  - *Fix XSS Risks:* One-click wrapping of user-controlled outputs (`echo $_GET`) with `htmlspecialchars()`.
+- **SQL Injection Detection:** Real-time warnings when variables are interpolated directly into SQL command strings.
+
+### Fixed
+- Resolved snippet syntax warnings related to unescaped PHP `$` variables in VS Code's snippet engine.
+
+## [1.0.0] - Initial Release
+- Launched PHPOcean with core architectural snippets (Database Singleton, CRUD wrappers, Secure Sessions, Master-Slave architecture).
+- Added sub-millisecond Hover Intelligence and Autocomplete for PHP functions.
+
+
 All notable changes to the **PHPOcean** extension will be documented in this file.
 ## [1.0.2] - 2026-03-05
 

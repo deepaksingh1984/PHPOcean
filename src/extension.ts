@@ -12,15 +12,39 @@ interface FuncData {
 const phpKnowledgeBase: Record<string, FuncData> = rawKnowledgeBase as Record<string, FuncData>;
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('PHP Code Intelligence is now active!');
+    console.log('🌊 PHPOcean Code Intelligence is now active!');
 
-    // 1. HOVER PROVIDER (Triggers when the user hovers over a word)
+    // ==========================================
+    // 1. SECURITY LINTER (Diagnostics)
+    // ==========================================
+    const securityDiagnostics = vscode.languages.createDiagnosticCollection('owasp-sentinel');
+    context.subscriptions.push(securityDiagnostics);
+
+    // Scan currently active file
+    if (vscode.window.activeTextEditor) {
+        scanDocument(vscode.window.activeTextEditor.document, securityDiagnostics);
+    }
+
+    // Scan file when user types or deletes
+    context.subscriptions.push(
+        vscode.workspace.onDidChangeTextDocument(event => {
+            scanDocument(event.document, securityDiagnostics);
+        })
+    );
+
+    // Scan newly opened files
+    context.subscriptions.push(
+        vscode.workspace.onDidOpenTextDocument(document => {
+            scanDocument(document, securityDiagnostics);
+        })
+    );
+
+    // ==========================================
+    // 2. HOVER PROVIDER
+    // ==========================================
     const hoverProvider = vscode.languages.registerHoverProvider('php', {
         provideHover(document, position, token) {
-            // Get the word the cursor is currently hovering over
             const range = document.getWordRangeAtPosition(position);
-            
-            // Safety check in case the cursor isn't over a word
             if (!range) {
                 return null;
             }
@@ -29,11 +53,10 @@ export function activate(context: vscode.ExtensionContext) {
             const funcData = phpKnowledgeBase[word];
             
             if (funcData) {
-                // Build a Markdown payload for the hover tooltip
                 const markdown = new vscode.MarkdownString();
                 markdown.appendCodeblock(funcData.signature, 'php');
                 markdown.appendMarkdown(`\n\n${funcData.description}\n\n`);
-                markdown.appendMarkdown(`[Read more on php.net](${funcData.url})`);
+                markdown.appendMarkdown(`[🌊 PHPOcean - Read more on php.net](${funcData.url})`);
                 
                 return new vscode.Hover(markdown);
             }
@@ -41,7 +64,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    // 2. COMPLETION PROVIDER (Triggers as the user types)
+    // ==========================================
+    // 3. COMPLETION PROVIDER
+    // ==========================================
     const completionProvider = vscode.languages.registerCompletionItemProvider('php', {
         provideCompletionItems(document, position, token, context) {
             const completionItems: vscode.CompletionItem[] = [];
@@ -60,7 +85,166 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    context.subscriptions.push(hoverProvider, completionProvider);
+    
+
+    // Register Hover, Autocomplete, AND the new Quick Fix Lightbulb
+    context.subscriptions.push(
+        hoverProvider, 
+        completionProvider,
+        vscode.languages.registerCodeActionsProvider('php', new OwaspQuickFixProvider(), {
+            providedCodeActionKinds: [vscode.CodeActionKind.QuickFix]
+        })
+    );
+}
+/**
+ * The core scanning engine. 
+ * This checks the document text against our OWASP security rules.
+ */
+function scanDocument(document: vscode.TextDocument, collection: vscode.DiagnosticCollection): void {
+    if (document.languageId !== 'php') {
+        return;
+    }
+
+    const diagnostics: vscode.Diagnostic[] = [];
+    const text = document.getText();
+
+    // --- RULE 1: INSECURE HASHING ALGORITHMS ---
+    const insecureHashRegex = /\b(md5|sha1)\s*\(([^)]*)\)/g;
+    let match;
+    while ((match = insecureHashRegex.exec(text)) !== null) {
+        const startPos = document.positionAt(match.index);
+        const endPos = document.positionAt(match.index + match[0].length);
+        const range = new vscode.Range(startPos, endPos);
+        
+        const diagnostic = new vscode.Diagnostic(
+            range, 
+            `🌊 PHPOcean - OWASP Warning: '${match[1]}' is cryptographically broken. Use 'password_hash()' for passwords or 'hash()' for data.`, 
+            vscode.DiagnosticSeverity.Warning
+        );
+        diagnostic.code = "OWASP-A02:Cryptographic-Failures";
+        diagnostics.push(diagnostic);
+    }
+
+    // --- RULE 2: SQL INJECTION RISKS ---
+    const sqlInjectionRegex = /(["'])(?:\s*)(?:SELECT|UPDATE|DELETE|INSERT\s+INTO).*?\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*.*?\1/gi;
+    let sqlMatch;
+    while ((sqlMatch = sqlInjectionRegex.exec(text)) !== null) {
+        const startPos = document.positionAt(sqlMatch.index);
+        const endPos = document.positionAt(sqlMatch.index + sqlMatch[0].length);
+        const range = new vscode.Range(startPos, endPos);
+        const diagnostic = new vscode.Diagnostic(range, `🌊 PHPOcean - OWASP Critical: Potential SQL Injection. Never interpolate variables directly into SQL strings. Use PDO prepared statements.`, vscode.DiagnosticSeverity.Error);
+        diagnostic.code = "OWASP-A03:Injection";
+        diagnostics.push(diagnostic);
+    }
+
+    // --- RULE 3: SESSION HIJACKING RISKS ---
+    const insecureSessionRegex = /\bsession_start\s*\(\s*\)/g;
+    let sessionMatch;
+    while ((sessionMatch = insecureSessionRegex.exec(text)) !== null) {
+        const startPos = document.positionAt(sessionMatch.index);
+        const endPos = document.positionAt(sessionMatch.index + sessionMatch[0].length);
+        const range = new vscode.Range(startPos, endPos);
+        const diagnostic = new vscode.Diagnostic(range, `🌊 PHPOcean - OWASP Warning: Bare 'session_start()' detected. Ensure you configure strict cookies to prevent session hijacking.`, vscode.DiagnosticSeverity.Warning);
+        diagnostic.code = "OWASP-A01:Broken-Access-Control";
+        diagnostics.push(diagnostic);
+    }
+
+    // --- RULE 4: CROSS-SITE SCRIPTING (XSS) RISKS ---
+    const xssRegex = /(?:echo|print|<\?=)[^;]*\$_(?:GET|POST|REQUEST|COOKIE|SERVER)[^;]*/gi;
+    let xssMatch;
+    while ((xssMatch = xssRegex.exec(text)) !== null) {
+        
+        // SAFETY CHECK: If the code is already wrapped in htmlspecialchars, ignore it!
+        if (xssMatch[0].toLowerCase().includes('htmlspecialchars') || xssMatch[0].toLowerCase().includes('htmlentities')) {
+            continue;
+        }
+
+        const startPos = document.positionAt(xssMatch.index);
+        const endPos = document.positionAt(xssMatch.index + xssMatch[0].length);
+        const range = new vscode.Range(startPos, endPos);
+        const diagnostic = new vscode.Diagnostic(range, `🌊 PHPOcean - OWASP High: Potential Cross-Site Scripting (XSS). Never output user-controlled variables directly to the browser.`, vscode.DiagnosticSeverity.Error);
+        diagnostic.code = "OWASP-A03:Injection-XSS";
+        diagnostics.push(diagnostic);
+    }
+
+    // Push the warnings to the editor
+    collection.set(document.uri, diagnostics);
+}
+
+// ==========================================
+// 4. QUICK FIX PROVIDER (The Lightbulb)
+// ==========================================
+// ==========================================
+// 4. QUICK FIX PROVIDER (The Lightbulb)
+// ==========================================
+export class OwaspQuickFixProvider implements vscode.CodeActionProvider {
+    provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.CodeAction[] {
+        const actions: vscode.CodeAction[] = [];
+
+        // Loop through all the warnings currently on the line the user clicked
+        for (const diagnostic of context.diagnostics) {
+            
+            // QUICK FIX 1: Fix Bare session_start()
+            if (diagnostic.code === "OWASP-A01:Broken-Access-Control") {
+                const fix = new vscode.CodeAction('🌊 PHPOcean - Apply PHPOcean Secure Session', vscode.CodeActionKind.QuickFix);
+                fix.edit = new vscode.WorkspaceEdit();
+                
+                // The modern PHP 7+ secure code
+                const secureSessionCode = `if (session_status() === PHP_SESSION_NONE) {\n    session_start([\n        'cookie_lifetime' => 3600,\n        'cookie_path' => '/',\n        'cookie_secure' => true,\n        'cookie_httponly' => true,\n        'cookie_samesite' => 'Strict'\n    ]);\n    session_regenerate_id(true);\n}`;
+                
+                fix.edit.replace(document.uri, diagnostic.range, secureSessionCode);
+                fix.isPreferred = true;
+                actions.push(fix);
+            }
+
+            // QUICK FIX 2: Fix XSS (Wrap in htmlspecialchars)
+            if (diagnostic.code === "OWASP-A03:Injection-XSS") {
+                const fix = new vscode.CodeAction('🌊 PHPOcean - Wrap with htmlspecialchars() (phpsanitize)', vscode.CodeActionKind.QuickFix);
+                fix.edit = new vscode.WorkspaceEdit();
+                
+                const badCode = document.getText(diagnostic.range);
+                const prefixRegex = /^\s*(echo\s+|print\s+|<\?=\s*)/i;
+                
+                // Remove prefix and remove any trailing semicolon
+                let innerCode = badCode.replace(prefixRegex, '').trim();
+                const hasSemicolon = innerCode.endsWith(';');
+                if (hasSemicolon) {
+                    innerCode = innerCode.slice(0, -1).trim(); // Remove the semicolon
+                }
+
+                const sanitizedCode = `htmlspecialchars(${innerCode}, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')${hasSemicolon ? ';' : ''}`;
+                
+                const prefixMatch = badCode.match(prefixRegex);
+                const prefix = prefixMatch ? prefixMatch[0] : 'echo ';
+
+                fix.edit.replace(document.uri, diagnostic.range, prefix + sanitizedCode);
+                actions.push(fix);
+            }
+
+            // QUICK FIX 3: Fix md5() / sha1() Cryptographic Failures
+            if (diagnostic.code === "OWASP-A02:Cryptographic-Failures") {
+                const matchText = document.getText(diagnostic.range);
+
+                // Option A: General Purpose Hashing
+                const fixHash = new vscode.CodeAction("🌊 PHPOcean - Upgrade to SHA-256 hash()", vscode.CodeActionKind.QuickFix);
+                fixHash.edit = new vscode.WorkspaceEdit();
+                const replacementHash = matchText.replace(/\b(?:md5|sha1)\s*\(([^)]*)\)/i, "hash('sha256', $1)");
+                fixHash.edit.replace(document.uri, diagnostic.range, replacementHash);
+                actions.push(fixHash);
+
+                // Option B: Password Hashing (The 90% Magic Fix)
+                const fixPassword = new vscode.CodeAction("🌊 PHPOcean - Upgrade to password_hash()", vscode.CodeActionKind.QuickFix);
+                fixPassword.edit = new vscode.WorkspaceEdit();
+                // Captures the inner variable ($1) and magically appends the second parameter!
+                const replacementPassword = matchText.replace(/\b(?:md5|sha1)\s*\(([^)]*)\)/i, "password_hash($1, PASSWORD_BCRYPT)");
+                fixPassword.edit.replace(document.uri, diagnostic.range, replacementPassword);
+                fixPassword.isPreferred = true; // Make the magic fix the default!
+                actions.push(fixPassword);
+            }
+        }
+
+        return actions;
+    }
 }
 
 export function deactivate() {}
