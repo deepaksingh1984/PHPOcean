@@ -20,12 +20,12 @@ Forget switching tabs to check the official documentation. PHPOcean includes a l
 * **Smart Autocomplete:** Native VS Code completion for standard PHP functions, PDO, MySQLi, and cURL, automatically dropping your cursor inside the required parameters.
 * **Direct Documentation Links:** Click directly through to the official `php.net` manual from the hover tooltip.
 
-![Database Class Demo](https://res.cloudinary.com/techmeshblog/image/upload/v1772708596/database_qkrq0q.gif)
+![Database Class Demo](https://res.cloudinary.com/techmeshblog/image/upload/v1772899602/databse_up0ece.gif)
 
 ## 🚀 High-Performance Snippet Library
 Stop rewriting the same configurations. Type a prefix and hit `Tab` to drop production-ready, highly secure architecture directly into your workspace.
 
-![Snippet Demo Session Security](https://res.cloudinary.com/techmeshblog/image/upload/v1772710172/session_daegmf.gif)
+![Snippet Demo Session Security](https://res.cloudinary.com/techmeshblog/image/upload/v1772899602/session_klouvm.gif)
 
 #### 🗄️ Database & High Concurrency
 * `phpdatabase_wrapper` - The Ultimate All-in-One PDO Database Singleton with dynamic CRUD operations.
@@ -61,30 +61,52 @@ $activeUsers = $db->selectAll(
     10                      // LIMIT
 );
 ```
-
-
-#### 🔒 Security & Authentication (Zero-Trust Aligned)
+## 🔒 Security & Authentication (Zero-Trust Aligned)
 * `phpsecuresession_class` - Strict Session Class (Fingerprinting, Cloudflare proxy IP resolution, timeouts).
 * `phpcsrf` - Secure CSRF Token Generation & Validation.
 * `phpsecure_crypto` - AES-256-CBC File and Data Encryption.
 * `phprecaptcha` - reCAPTCHA v3 API Risk Score Evaluation.
 * `phpotp` - Cryptographically Secure OTP Generator.
 
-#### 🌐 APIs, WebSockets & Compliance Reporting
-* `phpxml` - Strict DOMDocument XML Generation (Designed for global FATCA/CRS compliance reporting).
+### 📖 Quick Start: Secure Sessions
+
+```php
+require_once './SecureSession.php';
+
+// 1. Initialize the Session class
+$session = new SecureSession();
+
+// 2. Start the session securely
+$session->start();
+
+```
+
+### 🌐 APIs, WebSockets & Compliance Reporting
+* `phpapi_secure` - Secure API Endpoint (Bearer token validation, Nginx/Apache header fallbacks, JSON decoding).
 * `phpsse` - Server-Sent Events (SSE) Stream for real-time browser communication.
-* `phpcors` - Strict API CORS & Preflight `OPTIONS` Router.
+* `phpcors` - Strict API CORS & Preflight OPTIONS Router.
 * `phpcurl` - cURL Request Wrapper with Strict SSL Verification.
 * `phpjson` - Standardized JSON API Response Payload.
 
-#### 📁 File Handling & Background Execution
+## 📖 Quick Start: Secure API Endpoint
+Type `phpapi_secure` to instantly generate an endpoint that validates methods, checks Bearer tokens securely, and decodes incoming JSON payloads.
+
+```php
+// Automatically handles POST validation and Nginx/Apache Authorization headers
+$authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? (function_exists('getallheaders') ? (getallheaders()['Authorization'] ?? '') : '');
+
+$validAuthCode = 'Bearer your-secret-auth-code';
+
+// Uses hash_equals to prevent timing attacks
+if (!hash_equals($validAuthCode, $authHeader)) {
+    http_response_code(403); 
+    echo json_encode(['error' => 'Invalid authorization code']);
+    exit;
+}
+```
+
+### 📁 File Handling & Background Execution
 * `phpshell` - Secure Background Script Execution (Safely pass arguments to Python AI models or video frame processors).
 * `phpupload` - Secure File Upload Handler (MIME validation, hex renaming).
 * `phpcloudinary` - Cloudinary API Image Upload Integration.
 * `phpdir` - Secure Directory Creation (0755 permissions).
-
-## 🛠️ Installation
-Install the `.vsix` package directly from the VS Code Extensions menu, or search for "PHPOcean" in the marketplace.
-
----
-*Built for modern, secure, and highly scalable PHP development.*

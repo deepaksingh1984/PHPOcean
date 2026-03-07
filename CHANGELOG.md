@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the **PHPOcean** extension will be documented in this file.
 
+## [1.0.8] - 2026-03-07
+### Added
+- **Secure API Endpoint (`phpapi_secure`):** Added a production-ready API boilerplate snippet. It features strict HTTP method checking, cross-server (Apache/Nginx) authorization header extraction, timing-attack resistant token validation using `hash_equals()`, and automated JSON payload decoding.
+
 ## [1.0.7] - 2026-03-07
 ### Fixed
 - **SQL Scanner Precision:** Resolved a critical multi-line regex bleed that caused the SQL Injection linter to falsely flag standard PHP method signatures (like `public function insert()`). The scanner is now strictly single-line bound.
