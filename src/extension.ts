@@ -138,19 +138,28 @@ function scanDocument(document: vscode.TextDocument, collection: vscode.Diagnost
     }
 
     // --- RULE 3: SESSION HIJACKING RISKS ---
-    const insecureSessionRegex = /\bsession_start\s*\(\s*\)/g;
+   const insecureSessionRegex = /\bsession_start\s*\(\s*\)/g;
     let sessionMatch;
+    
+    // SAFETY CHECK: If the file already secures sessions via ini_set or session_set_cookie_params, stand down!
+    const isSessionSecuredGlobally = text.includes("session.cookie_secure") || text.includes("session_set_cookie_params");
+
     while ((sessionMatch = insecureSessionRegex.exec(text)) !== null) {
+        // If they already secured it elsewhere in the file, ignore this match!
+        if (isSessionSecuredGlobally) {
+            continue;
+        }
+
         const startPos = document.positionAt(sessionMatch.index);
         const endPos = document.positionAt(sessionMatch.index + sessionMatch[0].length);
         const range = new vscode.Range(startPos, endPos);
-        const diagnostic = new vscode.Diagnostic(range, `🌊 PHPOcean - OWASP Warning: Bare 'session_start()' detected. Ensure you configure strict cookies to prevent session hijacking.`, vscode.DiagnosticSeverity.Warning);
+        const diagnostic = new vscode.Diagnostic(range, `OWASP Warning: Bare 'session_start()' detected. Ensure you configure strict cookies to prevent session hijacking.`, vscode.DiagnosticSeverity.Warning);
         diagnostic.code = "OWASP-A01:Broken-Access-Control";
         diagnostics.push(diagnostic);
     }
 
     // --- RULE 4: CROSS-SITE SCRIPTING (XSS) RISKS ---
-    const xssRegex = /(?:echo|print|<\?=)[^;]*\$_(?:GET|POST|REQUEST|COOKIE|SERVER)[^;]*/gi;
+    const xssRegex = /(?:\becho\b|\bprint\b|<\?=)[^;]*\$_(?:GET|POST|REQUEST|COOKIE|SERVER)[^;]*/gi;
     let xssMatch;
     while ((xssMatch = xssRegex.exec(text)) !== null) {
         

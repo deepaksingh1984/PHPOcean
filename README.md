@@ -88,8 +88,7 @@ Spot a vulnerability? Just click the VS Code Lightbulb (`Ctrl + .`) to instantly
 Stop rewriting the same configurations. Type a trigger keyword and hit `Tab` to drop production-ready architecture directly into your workspace.
 
 **Popular Commands:**
-* `phpdatabase` - Drops a strict, high-performance PDO Singleton wrapper.
-* `phpdb_crud` - Generates a comprehensive Database class with dynamic, secure bindings.
+* `phpdatabase_wrapper` - Drops a strict, high-performance PDO Singleton wrapper which generates a comprehensive Database class with dynamic, secure bindings.
 * `phpmaster_slave` - Instantly scaffolds a Read/Write database connection pool.
 * `phpsecuresession_class` - Implements a highly secure, fingerprint-verified session manager.
 * `phpsanitize` - Drops in a standardized input sanitization method.
