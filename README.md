@@ -60,7 +60,7 @@ $activeUsers = $db->selectAll(
     'created_at DESC',      // ORDER BY
     10                      // LIMIT
 );
-
+```
 
 
 #### 🔒 Security & Authentication (Zero-Trust Aligned)
