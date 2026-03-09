@@ -151,7 +151,7 @@ $limiter->checkLimit($_SERVER['REMOTE_ADDR'], 60, 60);
 
 ### 🛠️ Installation
 
-![🚀 Click here to install PHPOcean directly from the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=DeepakSingh.phpocean)
+[🚀 Click here to install PHPOcean directly from the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=DeepakSingh.phpocean)
 
 1. Alternatively, you can install it from inside VS Code:
 2. Open the Extensions view (`Ctrl+Shift+X` on Windows/Linux, `Cmd+Shift+X` on macOS).
