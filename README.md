@@ -149,6 +149,11 @@ $limiter->checkLimit($_SERVER['REMOTE_ADDR'], 60, 60);
 * `phpcloudinary` - Cloudinary API Image Upload Integration.
 * `phpdir` - Secure Directory Creation (0755 permissions).
 
+#### 🌍 Geo-Spatial & Time
+* `phptimezone_convert` - Reusable function to convert times across global timezones (e.g., IST to PST) with automatic DST handling.
+* `sqlhaversine_query` - Highly efficient MySQL database query to calculate distances and find nearby locations using the Haversine formula.
+* `phphaversine_calc` - Application-layer PHP function to calculate the geographical distance between two coordinates.
+
 ### 🛠️ Installation
 
 [🚀 Click here to install PHPOcean directly from the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=DeepakSingh.phpocean)

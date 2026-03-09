@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to the 🌊 **PHPOcean** extension will be documented in this file.
 
+## [1.1.1] - 2026-03-09
+### Added
+- **Timezone Converter (`phptimezone_convert`):** Reusable function to convert specific times across global timezones (defaults to IST to PST) with automatic Daylight Saving Time (DST) and exception handling.
+- **MySQL Geo-Distance Calculator (`sqlhaversine_query`):** Highly efficient database-layer Haversine formula query to find locations within a specific radius.
+- **PHP Geo-Distance Calculator (`phphaversine_calc`):** Application-layer Haversine formula function to calculate the great-circle distance between two coordinates.
+
 ## [1.1.0] - 2026-03-09
 ### Added
 **Massive Zero-Trust Security & Enterprise API Update**

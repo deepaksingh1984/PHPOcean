@@ -1641,5 +1641,82 @@
       "$0"
     ],
     "description": "Generates a strict Content-Security-Policy header and a cryptographic nonce to defeat XSS"
+  },
+  "Timezone Converter Function (IST to PST)": {
+    "prefix": "phptimezone_convert",
+    "body": [
+      "/**",
+      " * Convert time between timezones (e.g., IST to California Time)",
+      " * Safely handles Daylight Saving Time (DST) automatically.",
+      " */",
+      "function convertTimezone(string \\$time, string \\$fromTz = '${1:Asia/Kolkata}', string \\$toTz = '${2:America/Los_Angeles}', string \\$format = '${3:Y-m-d h:i A}'): string ",
+      "{",
+      "    try {",
+      "        \\$date = new \\\\DateTime(\\$time, new \\\\DateTimeZone(\\$fromTz));",
+      "        \\$date->setTimezone(new \\\\DateTimeZone(\\$toTz));",
+      "        return \\$date->format(\\$format);",
+      "    } catch (\\\\Exception \\$e) {",
+      "        error_log('Timezone conversion error: ' . \\$e->getMessage());",
+      "        return 'Invalid Date/Timezone';",
+      "    }",
+      "}",
+      "",
+      "// --- Quick Start Usage ---",
+      "// // Converts 10:30 PM IST to California Time",
+      "// \\$californiaTime = convertTimezone('${4:22:30:00}');",
+      "// echo \"Converted Time: \" . \\$californiaTime;",
+      "$0"
+    ],
+    "description": "Reusable function to convert a specific time between timezones (like IST to PST) with error handling"
+  },
+  "Geo-Distance Calculator (MySQL Layer)": {
+    "prefix": "sqlhaversine_query",
+    "body": [
+      "/**",
+      " * Haversine Formula (Database Layer)",
+      " * Highly efficient: calculates distance directly in MySQL instead of the application layer.",
+      " */",
+      "\\$sql = \"SELECT *, ",
+      "          ROUND(6371 * acos(cos(radians(:user_lat)) * cos(radians(latitude)) * cos(radians(longitude) - radians(:user_lon)) + sin(radians(:user_lat)) * sin(radians(latitude)))) AS distance_km",
+      "          FROM ${1:locations_table}",
+      "          HAVING distance_km < :max_distance",
+      "          ORDER BY distance_km ASC",
+      "          LIMIT ${2:10}\";",
+      "",
+      "// Expected PDO Bindings for phpdatabase_wrapper:",
+      "// 'user_lat' => \\$user_latitude,",
+      "// 'user_lon' => \\$user_longitude,",
+      "// 'max_distance' => \\$radius_in_km",
+      "$0"
+    ],
+    "description": "Efficient MySQL query to calculate distance and find nearest locations using the Haversine formula"
+  },
+  "Geo-Distance Calculator (PHP Layer)": {
+    "prefix": "phphaversine_calc",
+    "body": [
+      "/**",
+      " * Haversine Formula (Application Layer)",
+      " * Calculates the great-circle distance between two points on Earth.",
+      " */",
+      "function calculateDistance(float \\$lat1, float \\$lon1, float \\$lat2, float \\$lon2): float ",
+      "{",
+      "    \\$pi80 = M_PI / 180;",
+      "    \\$lat1 *= \\$pi80;",
+      "    \\$lon1 *= \\$pi80;",
+      "    \\$lat2 *= \\$pi80;",
+      "    \\$lon2 *= \\$pi80;",
+      "    ",
+      "    \\$r = 6371; // Radius of Earth in kilometers",
+      "    \\$dlat = \\$lat2 - \\$lat1;",
+      "    \\$dlon = \\$lon2 - \\$lon1;",
+      "    ",
+      "    \\$a = sin(\\$dlat / 2) * sin(\\$dlat / 2) + cos(\\$lat1) * cos(\\$lat2) * sin(\\$dlon / 2) * sin(\\$dlon / 2);",
+      "    \\$c = 2 * atan2(sqrt(\\$a), sqrt(1 - \\$a));",
+      "    ",
+      "    return round(\\$r * \\$c);",
+      "}",
+      "$0"
+    ],
+    "description": "Calculate geographical distance between two coordinates in PHP"
   }
 }
