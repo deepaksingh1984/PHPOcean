@@ -2,7 +2,7 @@
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/deepakbsingh)
 
 
-[![Install from VS Code Marketplace](https://img.shields.io/badge/Install_from-VS_Code_Marketplace-0066b8?style=for-the-badge&logo=visual-studio-code&logoColor=white)](https://marketplace.visualstudio.com/items?itemName=YOUR_PUBLISHER_NAME.phpocean)
+[![Install from VS Code Marketplace](https://img.shields.io/badge/Install_from-VS_Code_Marketplace-0066b8?style=for-the-badge&logo=visual-studio-code&logoColor=white)](https://marketplace.visualstudio.com/items?itemName=DeepakSingh.phpocean)
 
 PHPOcean is an enterprise-grade PHP code intelligence and security extension for Visual Studio Code. Built specifically for developers handling high-concurrency databases, strict zero-trust security environments, and specialized API architectures, it helps you ship compliant, high-performance applications faster.
 
